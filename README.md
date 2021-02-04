@@ -34,7 +34,7 @@ aws configure
 
 > When configuring the IAM user, be sure to give them Administrator Access Privileges
 
-![IAM Permissions](privileges.png)
+![IAM Permissions](images/privileges.png)
 
 We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run CDK CLI commands to provision infrastructure and also to run a local version of the Next.js app and test it in a web browser.
 
@@ -695,10 +695,128 @@ npm run build && cdk deploy -O ../next-frontend/cdk-exports.json
 
 Since this is an authenticated API, we need to create a user in order to test out the API.
 
-To create a user, open the [Amazon Cognito Dashboard](Amazon Cognito Dashboard) and click on __Manage User Pools__.
+To create a user, open the [Amazon Cognito Dashboard](https://console.aws.amazon.com/cognito) and click on __Manage User Pools__.
 
 Next, click on the User Pool that starts with `cdkproductsuserpool`. _Be sure that you are in the same region in the AWS Console that you created your project in, or else the User Pool will not show up._
 
 In this dashboard, click __Users and groups__ to create a new user.
 
-> Note that you do not need to input a phone number to create a new user.
+> Note that you do __not__ need to input a phone number to create a new user.
+
+![Creating a user](images/create-user.png)
+
+## Creating a group and adding the user to the group
+
+Next, create a new group named "Admins" in the Cognito dashboard.
+
+![Creating a group](images/create-user.png)
+
+Next, add the user to the group by clicking on the user and then clicking "Add to group"
+
+![Adding a user to a group](images/add-user-to-group.png)
+
+## Testing in AppSync
+
+Now that the user is created, we can make both authenticated and unauthenticated requests in AppSync.
+
+To test out the API we can use the GraphiQL editor in the AppSync dashboard. To do so, open the [AppSync Dashboard](https://console.aws.amazon.com/appsync) and search for __cdk-product-api__.
+
+Next, click on __Queries__ to open the query editor.
+
+Here, you will be able to choose between public access (API Key) and private access (Amazon Cognito User Pools).
+
+![API Authorization](images/api-auth.png)
+
+To make any authenticated requests (for mutations or querying by user ID), you will need to sign in using the user you created in the Cognito dashboard:
+
+![Signing in](images/sign-in.png)
+
+> Note that the first time you sign in, you will be prompted to change your password.
+
+In the AppSync dashboard, click on __Queries__ to open the GraphiQL editor. In the editor, create a new product with the following mutation.
+
+> Be sure to have the authentication mode set to __Amazon Cognito User Pools__ and sign in with a user that is part of the `Admin` group in order to execute the following operations: `createProduct`, `deleteProduct`, `udpateProduct`.
+
+```graphql
+mutation createProduct {
+  createProduct(product: {
+    id: "001"
+    category: "Shoes"
+    name: "Yeezy Boost"
+    description: "The YEEZY BOOST features an upper composed of re-engineered Primeknit."
+    price: 300.49
+    inventory: 100
+  }) {
+    id
+    category
+    description
+    name
+    price
+    inventory
+  }
+}
+```
+
+Then, query for products:
+
+```graphql
+query listProducts {
+  listProducts {
+    id
+    name
+    description
+    price
+    category
+    inventory
+  }
+}
+```
+
+You can also test out the other operations:
+
+```graphql
+query getProductById {
+  getProductById(productId: "001") {
+    id
+    name
+    id
+    description
+    price
+    inventory
+  }
+}
+
+query productsByCategory {
+  productsByCategory(category: "Shoes") {
+    id
+    inventory
+    description
+    price
+    category
+    inventory
+    sku
+  }
+}
+
+mutation updateProduct {
+  updateProduct(product: {
+    id: "001"
+    name: "Yeezy Boost 350"
+  }) {
+    id
+    name
+  }
+}
+
+mutation deleteProduct {
+  deleteProduct(productId: "001")
+}
+```
+
+## Removing Services
+
+To delete the project, run the destroy comand:
+
+```
+cdk destroy
+```
