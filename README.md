@@ -594,3 +594,111 @@ async function deleteProduct(productId: string) {
 
 export default deleteProduct
 ```
+
+### updateProduct.ts
+
+```typescript
+const AWS = require('aws-sdk')
+const docClient = new AWS.DynamoDB.DocumentClient()
+
+type Params = {
+  TableName: string | undefined,
+  Key: string | {},
+  ExpressionAttributeValues: any,
+  ExpressionAttributeNames: any,
+  UpdateExpression: string,
+  ReturnValues: string,
+}
+
+async function updateProduct(product: any) {
+  let params : Params = {
+    TableName: process.env.PRODUCT_TABLE,
+    Key: {
+      id: product.id
+    },
+    UpdateExpression: "",
+    ExpressionAttributeNames: {},
+    ExpressionAttributeValues: {},
+    ReturnValues: "UPDATED_NEW"
+  }
+  let prefix = "set "
+  let attributes = Object.keys(product)
+  for (let i=0; i<attributes.length; i++) {
+    let attribute = attributes[i]
+    if (attribute !== "id") {
+      params["UpdateExpression"] += prefix + "#" + attribute + " = :" + attribute
+      params["ExpressionAttributeValues"][":" + attribute] = product[attribute]
+      params["ExpressionAttributeNames"]["#" + attribute] = attribute
+      prefix = ", "
+    }
+  }
+  try {
+    await docClient.update(params).promise()
+    return product
+  } catch (err) {
+    console.log('DynamoDB error: ', err)
+    return null
+  }
+}
+
+export default updateProduct
+```
+
+In this function there is logic that will build the `UpdateExpression` dynamically based on what is passed in. This way, we can allow the user to update `N` number of items without having to take into consideration how many items are being updated.
+
+### productsByCategory.ts
+
+```typescript
+const AWS = require('aws-sdk')
+const docClient = new AWS.DynamoDB.DocumentClient()
+
+async function productsByCategory(category: string) {
+  const params = {
+    TableName: process.env.PRODUCT_TABLE,
+    IndexName: 'productsByCategory',
+    KeyConditionExpression: '#fieldName = :category',
+    ExpressionAttributeNames: { '#fieldName': 'category' },
+    ExpressionAttributeValues: { ':category': category },
+  }
+
+  try {
+      const data = await docClient.query(params).promise()
+      return data.Items
+  } catch (err) {
+      console.log('DynamoDB error: ', err)
+      return null
+  }
+}
+
+export default productsByCategory
+```
+
+This function calls a DynamoDB `query`, querying on the `productsByCategory` Global Secondary Index, returning an array of items that match the `category` name passed in as an argument.
+
+## Deploying and testing
+
+To see what will be deployed before making changes at any time, you can build the project and run the CDK `diff` command from the root of the CDK project:
+
+```sh
+npm run build && cdk diff
+```
+
+> Note that if you run this command from another location other than the root of the CDK project, it will not work.
+
+At this point we are ready to deploy the back end. To do so, run the following command from your terminal in the root directory of your CDK project:
+
+```sh
+npm run build && cdk deploy -O ../next-frontend/cdk-exports.json
+```
+
+## Creating a user
+
+Since this is an authenticated API, we need to create a user in order to test out the API.
+
+To create a user, open the [Amazon Cognito Dashboard](Amazon Cognito Dashboard) and click on __Manage User Pools__.
+
+Next, click on the User Pool that starts with `cdkproductsuserpool`. _Be sure that you are in the same region in the AWS Console that you created your project in, or else the User Pool will not show up._
+
+In this dashboard, click __Users and groups__ to create a new user.
+
+> Note that you do not need to input a phone number to create a new user.
