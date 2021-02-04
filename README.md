@@ -1,5 +1,7 @@
 ## Build an Authenticated GraphQL API on AWS with CDK
 
+![Build an Authenticated GraphQL API on AWS with CDK](images/header.jpg)
+
 In this workshop you'll learn how to build and deploy an authenticated GraphQL API on AWS with Amazon Cognito, AWS AppSync, AWS Lambda, and Amazon DynamoDB.
 
 The API will implement a combination of private and public access to build out a basic Product API for an E Commerce back end.
