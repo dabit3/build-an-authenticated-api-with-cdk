@@ -1,4 +1,4 @@
-## Build an Authenticated GraphQL API on AWS with CDK
+## Workshop - Build an Authenticated GraphQL API on AWS with CDK
 
 ![Build an Authenticated GraphQL API on AWS with CDK](images/header.jpg)
 
