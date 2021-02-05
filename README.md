@@ -478,6 +478,8 @@ The function will also be passed an `identity` object if the request has been au
 
 Fields protected with `@aws_cognito_user_pools(cognito_groups: ["Admin"])` will only allow users who are signed in and part of the `Admin` group to perform the operation.
 
+> To manually check for groups, you can get the user's identity from the `event.identity` object and check for claims in the `event.identity.claims['cognito:groups']`.
+
 ### createProduct.ts
 
 ```typescript
