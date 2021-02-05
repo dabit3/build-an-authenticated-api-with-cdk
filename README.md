@@ -803,7 +803,6 @@ To authenticated API calls from a client application, the authorization type nee
 
 ```js
 // Using API Key
-
 const listProducts = `
   query listProducts {
     listProducts {
