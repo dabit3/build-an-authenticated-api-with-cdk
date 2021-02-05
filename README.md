@@ -235,11 +235,11 @@ type Query {
 
 type Mutation {
   createProduct(product: ProductInput!): Product
-    @aws_cognito_user_pools
+    @aws_cognito_user_pools(cognito_groups: ["Admin"])
   deleteProduct(productId: ID!): ID
-    @aws_cognito_user_pools
+    @aws_cognito_user_pools(cognito_groups: ["Admin"])
   updateProduct(product: UpdateProductInput!): Product
-    @aws_cognito_user_pools
+    @aws_cognito_user_pools(cognito_groups: ["Admin"])
 }
 
 type Subscription {
@@ -454,41 +454,21 @@ type AppSyncEvent = {
 
 exports.handler = async (event:AppSyncEvent) => {
   switch (event.info.fieldName) {
-    case "getProductById": {
+    case "getProductById":
       return await getProductById(event.arguments.productId)
-    }
-    case "createProduct": {
-      if (!checkForGroup(event, "Admin")) throw new Error('unauthorized')
+    case "createProduct":
       return await createProduct(event.arguments.product)
-    }
-    case "listProducts": {
+    case "listProducts":
       return await listProducts()
-    }
-    case "deleteProduct": {
-      if (!checkForGroup(event, "Admin")) throw new Error('unauthorized')
+    case "deleteProduct":
       return await deleteProduct(event.arguments.productId)
-    }
-    case "updateProduct": {
-      if (!checkForGroup(event, "Admin")) throw new Error('unauthorized')
+    case "updateProduct":
       return await updateProduct(event.arguments.product)
-    }
-    case "productsByCategory": {
+    case "productsByCategory":
       return await productsByCategory(event.arguments.category)
-    }
     default:
       return null
   }
-}
-
-function checkForGroup(event:AppSyncEvent, groupName:string) {
-  if (event.identity) {
-    if (event.identity.claims['cognito:groups']) {
-      if (event.identity.claims['cognito:groups'].includes(groupName)) {
-        return true
-      }
-    }
-  }
-  return false
 }
 ```
 
@@ -496,7 +476,7 @@ The handler function will use the GraphQL operation available in the `event.info
 
 The function will also be passed an `identity` object if the request has been authenticated by AppSync. If the event is coming from an authenticated request, then the `identity` object will be null.
 
-The `checkForGroup` function checks to see if the user calling the API is a part of a specified group. In our example, we are checking for the `Admin` group which will be securely passed 
+Fields protected with `@aws_cognito_user_pools(cognito_groups: ["Admin"])` will only allow users who are signed in and part of the `Admin` group to perform the operation.
 
 ### createProduct.ts
 

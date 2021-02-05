@@ -39,11 +39,11 @@ type Query {
 
 type Mutation {
   createProduct(product: ProductInput!): Product
-    @aws_cognito_user_pools
+    @aws_cognito_user_pools(cognito_groups: ["Admin"])
   deleteProduct(productId: ID!): ID
-    @aws_cognito_user_pools
+    @aws_cognito_user_pools(cognito_groups: ["Admin"])
   updateProduct(product: UpdateProductInput!): Product
-    @aws_cognito_user_pools
+    @aws_cognito_user_pools(cognito_groups: ["Admin"])
 }
 
 type Subscription {

@@ -25,39 +25,19 @@ type AppSyncEvent = {
 
 exports.handler = async (event:AppSyncEvent) => {
   switch (event.info.fieldName) {
-    case "getProductById": {
+    case "getProductById":
       return await getProductById(event.arguments.productId)
-    }
-    case "createProduct": {
-      if (!checkForGroup(event, "Admin")) throw new Error('unauthorized')
+    case "createProduct":
       return await createProduct(event.arguments.product)
-    }
-    case "listProducts": {
+    case "listProducts":
       return await listProducts()
-    }
-    case "deleteProduct": {
-      if (!checkForGroup(event, "Admin")) throw new Error('unauthorized')
+    case "deleteProduct":
       return await deleteProduct(event.arguments.productId)
-    }
-    case "updateProduct": {
-      if (!checkForGroup(event, "Admin")) throw new Error('unauthorized')
+    case "updateProduct":
       return await updateProduct(event.arguments.product)
-    }
-    case "productsByCategory": {
+    case "productsByCategory":
       return await productsByCategory(event.arguments.category)
-    }
     default:
       return null
   }
-}
-
-function checkForGroup(event:AppSyncEvent, groupName:string) {
-  if (event.identity) {
-    if (event.identity.claims['cognito:groups']) {
-      if (event.identity.claims['cognito:groups'].includes(groupName)) {
-        return true
-      }
-    }
-  }
-  return false
 }
