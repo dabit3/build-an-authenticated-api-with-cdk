@@ -46,7 +46,7 @@ We will be working from a terminal using a [Bash shell](https://en.wikipedia.org
 
 This workshop is intended for intermediate to advanced JavaScript developers wanting to learn more about full stack serverless development.
 
-While some level of React and GraphQL is helpful, because all front end code provided is copy and paste-able, this workshop requires zero previous knowledge about React or GraphQL.
+While some level of GraphQL is helpful, because all code provided is copy and paste-able, this workshop requires zero previous knowledge of GraphQL.
 
 ### Topics we'll be covering:
 
