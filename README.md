@@ -797,6 +797,56 @@ mutation deleteProduct {
 }
 ```
 
+## Calling the API from a client project
+
+To authenticated API calls from a client application, the authorization type needs to be specified in the query or mutation. Here is an example of how this looks in JavaScript:
+
+```js
+// Using API Key
+
+const listProducts = `
+  query listProducts {
+    listProducts {
+      id
+      name
+      description
+      price
+      category
+      inventory
+    }
+  }
+`
+
+const products = await API.graphql({
+  mutation: listProducts,
+  authMode: 'API_KEY'
+})
+
+// Authenticated request using Cognito
+const createProduct = `
+  mutation createProduct($product: ProductInput!) {
+    createProduct(product: $product) {
+      id
+      category
+      description
+      name
+      price
+      inventory
+    }
+  }
+`
+
+await API.graphql({
+  mutation: createProduct,
+  authMode: 'AMAZON_COGNITO_USER_POOLS',
+  variables: {
+    product
+  }
+})
+```
+
+To learn more or to see how this is done on Android, iOS or Flutter, check out the documentation [here](https://docs.amplify.aws/lib/)
+
 ## Removing Services
 
 To delete the project, run the destroy comand:
