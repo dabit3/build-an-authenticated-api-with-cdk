@@ -62,7 +62,7 @@ While some level of GraphQL is helpful, because all code provided is copy and pa
 
 ### Installing the CLI & Initializing a new CDK Project
 
-Now we'll install the CDK CLI:
+First, install the CDK CLI:
 
 ```sh
 npm install -g aws-cdk
