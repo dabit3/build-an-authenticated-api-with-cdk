@@ -70,6 +70,8 @@ npm install -g aws-cdk
 
 ### Initializing A New Project
 
+Next, create a new directory namned __cdk-products__, change into it, and initialize a new CDK project.
+
 ```sh
 mkdir cdk-products
 cd cdk-products
