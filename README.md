@@ -38,7 +38,7 @@ aws configure
 
 ![IAM Permissions](images/privileges.png)
 
-We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run CDK CLI commands to provision infrastructure and also to run a local version of the Next.js app and test it in a web browser.
+We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run CDK CLI commands to provision and deploy infrastructure.
 
 > To view the CDK pre-requisite docs, click [here](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
 
@@ -59,8 +59,6 @@ While some level of GraphQL is helpful, because all code provided is copy and pa
 - Deleting the resources
 
 ## Getting Started
-
-To get started, we first need to create a base folder for the app. Create a folder called __cdk-next__ and change into it.
 
 ### Installing the CLI & Initializing a new CDK Project
 
@@ -148,7 +146,7 @@ export class CdkProductsStack extends cdk.Stack {
 
 This code will create a Cognito User Pool that will enable the user to sign in with a username, email address, and password.
 
-A `userPoolClient` will also be created enabling client applications, in our case the Next.js app, to interact with the service.
+A `userPoolClient` will also be created enabling client applications to interact with the service.
 
 ## Adding the AWS AppSync GraphQL API with CDK
 
@@ -672,7 +670,7 @@ npm run build && cdk diff
 At this point we are ready to deploy the back end. To do so, run the following command from your terminal in the root directory of your CDK project:
 
 ```sh
-npm run build && cdk deploy -O ../next-frontend/cdk-exports.json
+npm run build && cdk deploy -O ./cdk-exports.json
 ```
 
 ## Creating a user
