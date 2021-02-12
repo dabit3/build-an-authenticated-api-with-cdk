@@ -68,8 +68,6 @@ First, install the CDK CLI:
 npm install -g aws-cdk
 ```
 
-### Initializing a new project
-
 Next, create a new directory namned __cdk-products__, change into it, and initialize a new CDK project.
 
 ```sh
