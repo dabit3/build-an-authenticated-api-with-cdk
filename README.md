@@ -689,9 +689,9 @@ In this dashboard, click __Users and groups__ to create a new user.
 
 ## Creating a group and adding the user to the group
 
-Next, create a new group named "Admins" in the Cognito dashboard.
+Next, create a new group named "Admin" in the Cognito dashboard.
 
-![Creating a group](images/create-user.png)
+![Creating a group](images/create-group.png)
 
 Next, add the user to the group by clicking on the user and then clicking "Add to group"
 
